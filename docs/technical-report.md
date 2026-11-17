@@ -331,7 +331,9 @@ _Analysis:_ Structural precision remains >95% because explicitly defined `row_sp
 
 ## 6. Confidence Scoring Formula
 
-The escalation guard uses a 5-signal confidence formula per page:
+The shipped escalation guard (`_compute_page_confidence` in `src/strategies/fast_text.py`) scores each page from four weighted signals: character density (30%), character count (25%), image coverage (30%) and fonts (15%), with thresholds read from `config/extraction_rules.yaml`.
+
+The original design, shown below and used for the validation that follows, had a fifth signal (word count), which the implementation does not use:
 
 ```python
 def compute_confidence_score(signals: dict) -> float:
@@ -437,7 +439,7 @@ The CBE report has 138 clean pages and 23 complex pages. Document-level classifi
 Docling outputs typed `DoclingDocument` objects (`TextItem`, `TableItem`, `PictureItem`) that map cleanly to our Pydantic schema. MinerU outputs Markdown, which loses structural type information — re-parsing Markdown to recover table structure is error-prone.
 
 **Decision 3 — Multi-Signal Confidence:**
-A single-signal detector fails on ghost text (Failure Mode 1). Five signals create enough separation that no realistic document class can fool all signals simultaneously.
+A single-signal detector fails on ghost text (Failure Mode 1). Four signals (density, character count, image coverage, fonts) create enough separation that no realistic document class can fool all of them at once.
 
 **Decision 4 — PageIndex for Long Documents:**
 The CBE report produces ~2,000–3,000 LDUs after chunking. Embedding search alone returns semantically similar chunks from multiple sections. PageIndex narrows search to the correct section first, then retrieves only relevant chunks — the difference between a hallucinated aggregate and a precise cited figure.

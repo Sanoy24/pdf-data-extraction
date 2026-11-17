@@ -477,7 +477,22 @@ Triage Agent's scanned_image classification gates this correctly.
 
 ## 5. Confidence Scoring Formula
 
-The formula is the core of the escalation guard. It combines five signals into
+> **Shipped formula.** The code (`_compute_page_confidence` in
+> `src/strategies/fast_text.py`) uses four weighted signals, with thresholds
+> read from `config/extraction_rules.yaml`:
+>
+> | Signal | Weight | Full score when |
+> |---|---|---|
+> | Character density | 30% | density ≥ 0.01 chars/pt² |
+> | Character count | 25% | count ≥ `min_char_count` |
+> | Image coverage | 30% | image area ≤ `max_image_area_ratio` (penalised above it) |
+> | Fonts | 15% | font count ≥ `min_font_count` |
+>
+> The five-signal version below (with a word-count signal) is the original
+> design from the corpus analysis; the implementation does not use the
+> word-count signal.
+
+The formula is the core of the escalation guard. The original design combined five signals into
 a single 0.0–1.0 score per page. Every weight below was validated against the
 corpus data.
 
@@ -640,8 +655,8 @@ The Audit Report has `char_count: 116` — non-zero. A `char_count > 0` gate wou
 pass it to Strategy A. The multi-signal formula catches it via `char_density: 0.000002`
 even though `char_count` is technically non-zero.
 
-Five signals (char_count, char_density, image_area_ratio, font_count, word_count)
-create enough separation that no realistic document class can fool all signals simultaneously.
+Four signals (char_density, char_count, image_area_ratio, font_count) create
+enough separation that no realistic document class can fool all of them at once.
 
 ### Decision 4: PageIndex Required for Long Financial Documents
 
