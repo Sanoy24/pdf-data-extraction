@@ -1,7 +1,6 @@
-# DOMAIN_NOTES.md
+# Design notes
 
-**Week 3: The Document Intelligence Refinery — Phase 0 Domain Onboarding**
-_TRP1 FDE Program | Author: [Your Name] | Date: 2025_
+How the extraction thresholds, routing rules and cost decisions were derived from measurements on the test corpus.
 
 ---
 
@@ -228,7 +227,7 @@ flowchart TD
 
 ## 3. Corpus Analysis — Observed Metrics
 
-All values below are empirical measurements from Phase 0 pdfplumber analysis.
+All values below are empirical measurements from the pdfplumber corpus analysis.
 These are not estimates — they are ground truth from running the script against
 the actual corpus files.
 
@@ -367,7 +366,7 @@ row relationships when processing these tables.
 
 ## 4. Failure Modes Observed
 
-These are real failure modes discovered by inspecting Phase 0 output. Each one
+These are real failure modes discovered by inspecting the corpus analysis output. Each one
 directly shaped an architectural decision.
 
 ---
@@ -399,7 +398,7 @@ metadata-only pages score at zero and escalate immediately.
 
 **Document:** CBE Annual Report 2023-24 (and all digital docs)
 **Symptom:** Initial `min_char_density` threshold was set at `0.010` based on
-intuition. After Phase 0 analysis, the corpus average for clean native digital
+intuition. After the corpus analysis, the corpus average for clean native digital
 documents is `0.003–0.004`. With the original threshold, 100% of pages in the
 CBE report (including perfectly clean ones) were being classified as low-confidence.
 
@@ -412,7 +411,7 @@ when the underlying text is perfectly machine-readable.
 Every page would have incorrectly escalated to Strategy B, tripling processing time
 for no quality gain.
 
-**Fix implemented:** After Phase 0, threshold updated to `0.002` in
+**Fix implemented:** After the corpus analysis, threshold updated to `0.002` in
 `extraction_rules.yaml`. This is below the corpus minimum for digital docs
 (`0.000261` for Tax report) while remaining above the scanned doc's effective
 zero (`0.000002`). Empirically validated — not guessed.
@@ -480,7 +479,7 @@ Triage Agent's scanned_image classification gates this correctly.
 
 The formula is the core of the escalation guard. It combines five signals into
 a single 0.0–1.0 score per page. Every weight below was validated against the
-Phase 0 corpus data.
+corpus data.
 
 ```python
 def compute_confidence_score(signals: dict) -> float:
@@ -541,8 +540,8 @@ sit comfortably in the gap.
 
 ## 6. Empirically Calibrated Thresholds
 
-These values are set in `rubric/extraction_rules.yaml`. All values below were
-derived from Phase 0 corpus measurements, not intuition.
+These values are set in `config/extraction_rules.yaml`. All values below were
+derived from corpus measurements, not intuition.
 
 | Parameter                       | Initial Value | Calibrated Value | Evidence                                              |
 | ------------------------------- | ------------- | ---------------- | ----------------------------------------------------- |
@@ -558,8 +557,8 @@ derived from Phase 0 corpus measurements, not intuition.
 
 ## 7. VLM Cost Tradeoff Analysis
 
-Every FDE must be able to articulate the Vision model cost decision to a client's
-data engineering team. Here is the precise analysis for this corpus.
+The Vision model cost decision has to be explainable to a client's data
+engineering team. Here is the precise analysis for this corpus.
 
 ### Cost Per Strategy
 
@@ -608,7 +607,7 @@ used for any digital document regardless of layout complexity.
 
 ## 8. Key Architectural Decisions
 
-Each decision below is grounded in Phase 0 data, not framework preference.
+Each decision below is grounded in corpus data, not framework preference.
 
 ### Decision 1: Page-Level Escalation, Not Document-Level
 
@@ -657,12 +656,12 @@ aggregate and a precise cited figure.
 
 ### Decision 5: Externalize All Thresholds to extraction_rules.yaml
 
-**Reason:** The most important lesson from Phase 0. The initial `min_char_density`
+**Reason:** The most important lesson from the corpus analysis. The initial `min_char_density`
 threshold of `0.010` was wrong. If it had been hardcoded in Python, fixing it would
 require a code change, a PR, a review, a deploy. Because it lives in
 `extraction_rules.yaml`, onboarding a new document type (e.g., Arabic-language
 financial reports with different density characteristics) requires only editing one
-YAML file. No code changes. This is what the rubric means by "FDE Readiness."
+YAML file. No code changes.
 
 ---
 
@@ -701,7 +700,4 @@ YAML file. No code changes. This is what the rubric means by "FDE Readiness."
 
 ---
 
-_DOMAIN_NOTES.md is a living document. Update Section 4 (Failure Modes) as new
-failure cases are discovered during Phases 1–4 implementation._
-
-_Last updated after Phase 0 corpus analysis — all metrics are empirical._
+_All metrics in these notes are empirical measurements from the corpus analysis._

@@ -1,10 +1,10 @@
-# Final Submission Report: The Document Intelligence Refinery
+# Technical report: PDF Data Extraction Pipeline
 
-_TRP1 FDE Program — Week 3 Challenge_
+_Design, cost analysis, extraction quality and lessons learned._
 
 ---
 
-## 1. Domain Notes (Phase 0 Deliverable)
+## 1. Domain notes
 
 ### 1.1 Extraction Strategy Decision Tree
 
@@ -63,7 +63,7 @@ flowchart TD
 The DBE Audit Report (95 pages, scanned) has 116 total characters from PDF metadata, not real content. A naive `char_count > 0` check would route it to Strategy A. The multi-signal confidence formula catches this: `char_density = 0.000002` and `image_area_ratio = 0.9896` produce a confidence of 0.0074, correctly sending every page to Strategy C.
 
 **Failure Mode 2 — Threshold Miscalibration:**
-The initial `min_char_density` threshold was set to 0.010 based on intuition. After Phase 0 analysis, the corpus average for clean digital documents is 0.003–0.004 (financial documents have large whitespace in table rows). With the old threshold, 100% of CBE report pages would have incorrectly escalated to Strategy B. Threshold was calibrated to 0.002 based on empirical data.
+The initial `min_char_density` threshold was set to 0.010 based on intuition. After the corpus analysis, the corpus average for clean digital documents is 0.003–0.004 (financial documents have large whitespace in table rows). With the old threshold, 100% of CBE report pages would have incorrectly escalated to Strategy B. Threshold was calibrated to 0.002 based on empirical data.
 
 **Failure Mode 3 — Table Cell Hierarchy Loss (Tax Report):**
 pdfplumber extracts all cells correctly but loses the indentation hierarchy in fiscal category tables. "Coffee (Unwashed)" is a subcategory of "Agricultural Products" but appears as a flat peer. The ChunkValidator detects indented patterns and encodes parent-child metadata on LDUs.
@@ -323,7 +323,7 @@ _Analysis:_ Structural precision remains >95% because explicitly defined `row_sp
 
 ### Case 4: Threshold Miscalibration From Intuition
 
-**Initial Approach / Failure:** The initial `min_char_density` threshold was set to 0.010 based on intuition. After Phase 0 analysis, the actual corpus average for clean native digital documents is 0.003–0.004. With the original threshold, 100% of the CBE report pages (including perfectly clean ones) would have incorrectly escalated to Strategy B, tripling processing time for no quality gain.
+**Initial Approach / Failure:** The initial `min_char_density` threshold was set to 0.010 based on intuition. After the corpus analysis, the actual corpus average for clean native digital documents is 0.003–0.004. With the original threshold, 100% of the CBE report pages (including perfectly clean ones) would have incorrectly escalated to Strategy B, tripling processing time for no quality gain.
 
 **Fix:** Threshold was updated to 0.002 in `extraction_rules.yaml` after empirical validation. This sits below the corpus minimum for digital docs (0.000261) while remaining well above scanned docs' effective zero (0.000002). Lesson: **always calibrate thresholds from data, never from intuition.**
 
@@ -381,7 +381,7 @@ def compute_confidence_score(signals: dict) -> float:
 
 ## 7. Corpus Analysis — Empirical Metrics
 
-All values below are empirical measurements from Phase 0 pdfplumber analysis.
+All values below are empirical measurements from the pdfplumber corpus analysis.
 
 ### Class A: CBE Annual Report 2023-24 (Native Digital, Table-Heavy)
 
@@ -443,13 +443,13 @@ A single-signal detector fails on ghost text (Failure Mode 1). Five signals crea
 The CBE report produces ~2,000–3,000 LDUs after chunking. Embedding search alone returns semantically similar chunks from multiple sections. PageIndex narrows search to the correct section first, then retrieves only relevant chunks — the difference between a hallucinated aggregate and a precise cited figure.
 
 **Decision 5 — Externalize All Thresholds:**
-The most critical lesson from Phase 0. All thresholds live in `extraction_rules.yaml`. A new document type can be onboarded by editing one YAML file — no code changes. This is what the rubric means by "FDE Readiness."
+The most critical lesson from the corpus analysis. All thresholds live in `extraction_rules.yaml`. A new document type can be onboarded by editing one YAML file — no code changes.
 
 ---
 
 ## 9. Empirically Calibrated Thresholds
 
-All values in `rubric/extraction_rules.yaml` — derived from Phase 0 data, not intuition.
+All values in `config/extraction_rules.yaml` — derived from corpus data, not intuition.
 
 | Parameter                       | Initial Value | Calibrated Value | Evidence                                              |
 | :------------------------------ | :-----------: | :--------------: | :---------------------------------------------------- |
