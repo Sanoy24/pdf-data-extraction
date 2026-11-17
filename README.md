@@ -1,8 +1,18 @@
 # 🏭 Document Intelligence Refinery
 
-A production-grade, multi-stage agentic pipeline that ingests heterogeneous document corpora (PDFs, scanned reports, table-heavy documents) and emits structured, queryable, spatially-indexed knowledge.
+**Turn messy PDFs into data you can query, with a source for every answer.** Annual reports, financial statements, multi-column layouts, table-heavy filings and scanned pages all go in; structured chunks, a SQL table of key figures, and a search index come out. Questions are answered with the page number and the exact excerpt they came from.
 
-**TRP1 Challenge — Week 3 | FDE Program**
+**What it does well**
+
+- **Picks the cheapest extraction that works, page by page.** Clean text pages use pdfplumber (free, under 0.1 s a page), complex layouts and tables use Docling (free, local), and only scanned or low-confidence pages go to a vision model (about $0.001 a page). A mixed 200-page report doesn't pay vision prices for its 190 clean pages.
+- **Knows when extraction went wrong.** A five-signal confidence score per page escalates to the next method when text is missing, garbled or a fake text layer, instead of silently passing bad data on.
+- **Keeps the numbers queryable.** Financial and numerical facts land in a SQL table, so "total income in 2023-24" is a lookup, not a guess.
+- **Answers with citations.** A LangGraph agent navigates the document's section tree, searches the vector index or queries the fact table, and every answer carries page numbers, content hashes and the source excerpt ([sample answers](docs/evaluation_qa.md)).
+- **New document types without code changes.** Thresholds, chunking rules and the per-document cost budget live in one YAML file.
+
+Example from the evaluation log: asked for the Commercial Bank of Ethiopia's 2023-24 total income, the agent answers "Birr 137.4 billion" and cites page 14 of the annual report with the exact sentence.
+
+Stack: Python, pdfplumber, Docling, vision LLMs (OpenAI, Gemini or OpenRouter), Ollama, LangGraph, ChromaDB, SQLite, Pydantic. Built during 10 Academy's Applied AI Engineering program.
 
 ---
 
@@ -19,7 +29,7 @@ A production-grade, multi-stage agentic pipeline that ingests heterogeneous docu
 
 ```bash
 # Clone the repository
-git clone <repo-url>
+git clone https://github.com/Sanoy24/trp1-document-intelligence-refinery.git
 cd trp1-document-intelligence-refinery
 
 # Install dependencies
