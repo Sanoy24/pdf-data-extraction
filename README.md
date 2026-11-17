@@ -12,7 +12,7 @@
 
 Example from the evaluation log: asked for the Commercial Bank of Ethiopia's 2023-24 total income, the agent answers "Birr 137.4 billion" and cites page 14 of the annual report with the exact sentence.
 
-Stack: Python, pdfplumber, Docling, vision LLMs (OpenAI, Gemini or OpenRouter), Ollama, LangGraph, ChromaDB, SQLite, Pydantic. Built during 10 Academy's Applied AI Engineering program.
+Stack: Python, pdfplumber, Docling, vision LLMs (OpenAI, Gemini or OpenRouter), Ollama, LangGraph, ChromaDB, SQLite, Pydantic.
 
 ---
 
@@ -55,7 +55,7 @@ cp .env.example .env
 | `OPENAI_API_KEY`       | —                              | Required if using OpenAI as provider                      |
 | `GOOGLE_API_KEY`       | —                              | Required if using Gemini as provider                      |
 | `OPENROUTER_API_KEY`   | —                              | Alternative API gateway for Vision extraction             |
-| `REFINERY_CONFIG_PATH` | `rubric/extraction_rules.yaml` | Path to the configuration file                            |
+| `REFINERY_CONFIG_PATH` | `config/extraction_rules.yaml` | Path to the configuration file                            |
 
 ---
 
@@ -133,7 +133,7 @@ pdf-data-extraction/
 ├── tests/
 │   ├── test_triage.py                   # Triage Agent classification tests
 │   └── test_confidence.py              # Confidence scoring tests
-├── rubric/
+├── config/
 │   └── extraction_rules.yaml           # Externalized thresholds, chunking rules, budget guard
 ├── corpus/                              # Input documents (50 PDFs, 4 document classes)
 ├── .refinery/                           # Pipeline output artifacts
@@ -143,9 +143,9 @@ pdf-data-extraction/
 │   ├── chroma_db/                       # ChromaDB vector store (LDU embeddings)
 │   └── facts.db                         # SQLite FactTable (financial/numerical metrics)
 ├── docs/
-│   ├── final_report.md                  # Unified final submission report
+│   ├── technical-report.md              # Design, cost analysis, extraction quality, lessons learned
+│   ├── design-notes.md                  # How thresholds and routing were derived from corpus measurements
 │   └── evaluation_qa.md               # 12 Q&A examples with provenance (3 per class)
-├── DOMAIN_NOTES.md                      # Phase 0 domain onboarding (708 lines)
 ├── Dockerfile
 ├── pyproject.toml
 └── README.md
@@ -191,7 +191,7 @@ The escalation guard operates at **page-level**, not document-level. This avoids
 
 ## Configuration
 
-All thresholds and parameters are externalized in `rubric/extraction_rules.yaml`:
+All thresholds and parameters are externalized in `config/extraction_rules.yaml`:
 
 - **Confidence gates**: Strategy A/B minimum thresholds
 - **Page signal thresholds**: char count, density, image ratio
@@ -215,4 +215,4 @@ export REFINERY_CONFIG_PATH=path/to/custom/extraction_rules.yaml
 2. **Multi-signal confidence formula** (5 signals) — prevents ghost text layer false positives
 3. **Docling over MinerU** for Strategy B — typed `DoclingDocument` maps cleanly to Pydantic schemas
 4. **PageIndex for long documents** — narrows vector search to relevant sections first
-5. **All thresholds in YAML** — enables FDE-ready onboarding without code changes
+5. **All thresholds in YAML** — new document types are onboarded without code changes

@@ -219,6 +219,5 @@ phase0_output/
 docling_compare.py
 pdfplumber-test.py
 corpus/
-interim_report.md
 *.db
 chroma_db/

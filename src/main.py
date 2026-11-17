@@ -6,7 +6,7 @@ Orchestrates: Triage → Extraction Router → outputs profiles + ledger.
 Usage:
     python -m src.main --input corpus/
     python -m src.main --input corpus/somefile.pdf
-    python -m src.main --input corpus/ --config rubric/extraction_rules.yaml
+    python -m src.main --input corpus/ --config config/extraction_rules.yaml
 """
 
 from __future__ import annotations
@@ -133,7 +133,7 @@ def main() -> None:
     parser.add_argument(
         "--config", "-c",
         default=None,
-        help="Path to extraction_rules.yaml (default: rubric/extraction_rules.yaml)",
+        help="Path to extraction_rules.yaml (default: config/extraction_rules.yaml)",
     )
     parser.add_argument(
         "--triage-only",

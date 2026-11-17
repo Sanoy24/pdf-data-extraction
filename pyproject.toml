@@ -1,7 +1,7 @@
 [project]
 name = "pdf-data-extraction"
 version = "0.1.0"
-description = "Document Intelligence Refinery — a production-grade, multi-stage agentic pipeline for unstructured document extraction"
+description = "Turn messy PDFs into structured data and cited answers, picking the cheapest extraction method per page"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

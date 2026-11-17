@@ -14,7 +14,7 @@ from typing import Any
 import yaml
 
 
-_DEFAULT_CONFIG_PATH = Path(__file__).resolve().parent.parent / "rubric" / "extraction_rules.yaml"
+_DEFAULT_CONFIG_PATH = Path(__file__).resolve().parent.parent / "config" / "extraction_rules.yaml"
 
 
 @lru_cache(maxsize=1)
@@ -24,7 +24,7 @@ def get_config() -> dict[str, Any]:
 
     Resolution order:
       1. REFINERY_CONFIG_PATH environment variable
-      2. rubric/extraction_rules.yaml relative to project root
+      2. config/extraction_rules.yaml relative to project root
     """
     config_path_str = os.environ.get("REFINERY_CONFIG_PATH")
     if config_path_str:
@@ -35,7 +35,7 @@ def get_config() -> dict[str, Any]:
     if not config_path.exists():
         raise FileNotFoundError(
             f"Extraction rules config not found at {config_path}. "
-            "Set REFINERY_CONFIG_PATH or ensure rubric/extraction_rules.yaml exists."
+            "Set REFINERY_CONFIG_PATH or ensure config/extraction_rules.yaml exists."
         )
 
     with open(config_path, "r", encoding="utf-8") as f:

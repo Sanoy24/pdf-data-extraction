@@ -2,10 +2,10 @@
 # The Chunking Constitution & Extraction Thresholds
 # =================================================
 # This file is the SINGLE SOURCE OF TRUTH for all tunable parameters.
-# The rubric requires: "A new document type can be onboarded by modifying
-# only extraction_rules.yaml, not code."
+# Design rule: a new document type can be onboarded by modifying
+# only extraction_rules.yaml, not code.
 #
-# Update the threshold values after Phase 0 empirical analysis.
+# Threshold values come from empirical analysis of the test corpus.
 # DO NOT hardcode any of these values in Python.
 
 # ─────────────────────────────────────────────────────────────
@@ -33,10 +33,10 @@ page_signals:
 
     # Minimum char density (chars / page_area_pts²) for fast text extraction
     # Below this → likely scanned or image-dominated
-    # Calibrated from Phase 0 corpus analysis:
+    # Calibrated from the corpus analysis:
     #   - Digital docs avg ≈ 0.003–0.004
     #   - Scanned docs ≈ 0.000002
-    # See DOMAIN_NOTES.md §6.
+    # See docs/design-notes.md §6.
     min_char_density: 0.002
 
     # Maximum image area ratio for Strategy A

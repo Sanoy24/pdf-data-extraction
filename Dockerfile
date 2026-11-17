@@ -19,9 +19,9 @@ RUN uv sync --frozen --no-dev
 
 # Copy source code and config
 COPY src/ src/
-COPY rubric/ rubric/
+COPY config/ config/
 COPY .env.example .env.example
-COPY DOMAIN_NOTES.md README.md ./
+COPY README.md ./
 
 # Create .refinery output directories
 RUN mkdir -p .refinery/profiles .refinery/pageindex .refinery/chroma_db

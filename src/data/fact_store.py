@@ -2,7 +2,7 @@
 FactTable Extractor Database Layer.
 
 Handles secure, structured extraction of key-value metrics
-into a SQLite database for precise querying (Rubric Stage 4).
+into a SQLite database for precise querying (stage 4).
 """
 
 from __future__ import annotations
