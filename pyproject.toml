@@ -1,5 +1,5 @@
 [project]
-name = "trp1-document-intelligence-refinery"
+name = "pdf-data-extraction"
 version = "0.1.0"
 description = "Document Intelligence Refinery — a production-grade, multi-stage agentic pipeline for unstructured document extraction"
 readme = "README.md"
