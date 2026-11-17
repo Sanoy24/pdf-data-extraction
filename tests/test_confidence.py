@@ -29,8 +29,6 @@ class TestConfidenceScoring:
             char_density=0.005,
             image_area_ratio=0.0,
             font_count=5,
-            table_count=0,
-            page_area=400000.0,
         )
         assert score >= 0.70, f"Expected >= 0.70, got {score}"
 
@@ -41,8 +39,6 @@ class TestConfidenceScoring:
             char_density=0.0,
             image_area_ratio=0.98,
             font_count=0,
-            table_count=0,
-            page_area=400000.0,
         )
         assert score < 0.45, f"Expected < 0.45, got {score}"
 
@@ -53,8 +49,6 @@ class TestConfidenceScoring:
             char_density=0.0002,
             image_area_ratio=0.60,
             font_count=2,
-            table_count=0,
-            page_area=400000.0,
         )
         # Should be in the marginal zone (roughly 0.3–0.7)
         assert 0.0 <= score <= 1.0
@@ -67,8 +61,6 @@ class TestConfidenceScoring:
             char_density=1.0,
             image_area_ratio=0.0,
             font_count=100,
-            table_count=50,
-            page_area=400000.0,
         )
         assert 0.0 <= score <= 1.0
 
@@ -77,8 +69,6 @@ class TestConfidenceScoring:
             char_density=0.0,
             image_area_ratio=1.0,
             font_count=0,
-            table_count=0,
-            page_area=0.0,
         )
         assert 0.0 <= score2 <= 1.0
 

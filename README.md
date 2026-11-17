@@ -5,7 +5,7 @@
 **What it does well**
 
 - **Picks the cheapest extraction that works, page by page.** Clean text pages use pdfplumber (free, under 0.1 s a page), complex layouts and tables use Docling (free, local), and only scanned or low-confidence pages go to a vision model (about $0.001 a page). A mixed 200-page report doesn't pay vision prices for its 190 clean pages.
-- **Knows when extraction went wrong.** A five-signal confidence score per page escalates to the next method when text is missing, garbled or a fake text layer, instead of silently passing bad data on.
+- **Knows when extraction went wrong.** A confidence score per page (text density, character count, image coverage and fonts) escalates to the next method when text is missing, garbled or a fake text layer, instead of silently passing bad data on.
 - **Keeps the numbers queryable.** Financial and numerical facts land in a SQL table, so "total income in 2023-24" is a lookup, not a guess.
 - **Answers with citations.** A LangGraph agent navigates the document's section tree, searches the vector index or queries the fact table, and every answer carries page numbers, content hashes and the source excerpt ([sample answers](docs/evaluation_qa.md)).
 - **New document types without code changes.** Thresholds, chunking rules and the per-document cost budget live in one YAML file.
@@ -212,7 +212,7 @@ export REFINERY_CONFIG_PATH=path/to/custom/extraction_rules.yaml
 ## Key Design Decisions
 
 1. **Page-level escalation** over document-level — saves Vision API budget on mixed documents
-2. **Multi-signal confidence formula** (5 signals) — prevents ghost text layer false positives
+2. **Multi-signal confidence formula** (4 signals) — prevents ghost text layer false positives
 3. **Docling over MinerU** for Strategy B — typed `DoclingDocument` maps cleanly to Pydantic schemas
 4. **PageIndex for long documents** — narrows vector search to relevant sections first
 5. **All thresholds in YAML** — new document types are onboarded without code changes
