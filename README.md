@@ -1,4 +1,4 @@
-# 🏭 Document Intelligence Refinery
+# 🏭 PDF Data Extraction Pipeline (Document Intelligence Refinery)
 
 **Turn messy PDFs into data you can query, with a source for every answer.** Annual reports, financial statements, multi-column layouts, table-heavy filings and scanned pages all go in; structured chunks, a SQL table of key figures, and a search index come out. Questions are answered with the page number and the exact excerpt they came from.
 
@@ -29,8 +29,8 @@ Stack: Python, pdfplumber, Docling, vision LLMs (OpenAI, Gemini or OpenRouter), 
 
 ```bash
 # Clone the repository
-git clone https://github.com/Sanoy24/trp1-document-intelligence-refinery.git
-cd trp1-document-intelligence-refinery
+git clone https://github.com/Sanoy24/pdf-data-extraction.git
+cd pdf-data-extraction
 
 # Install dependencies
 uv sync
@@ -107,7 +107,7 @@ docker run -v ./corpus:/app/corpus -v ./.refinery:/app/.refinery refinery --inpu
 ## Project Structure
 
 ```
-trp1-document-intelligence-refinery/
+pdf-data-extraction/
 ├── src/
 │   ├── main.py                          # CLI entrypoint — orchestrates all 5 stages
 │   ├── config.py                        # YAML config loader
